@@ -110,6 +110,88 @@
     </div>
 
     <script>
+      let regboard = ["", "", "", "", "", "", "", "", ""];
+let winCases = [
+[0, 1, 2],
+[3, 4, 5],
+[6, 7, 8],
+[0, 3, 6],
+[1, 4, 7],
+[2, 5, 8],
+[0, 4, 8],
+[6, 4, 2],
+];
+
+let scoreX = 0;
+let scoreO = 0;
+let cur = "X";
+let gameOver = false;
+let winCell;
+
+const cells = document.querySelectorAll(".cell");
+
+cells.forEach((cell, index) => {
+cell.addEventListener("click", () => {
+if (cell.innerText === "" && !gameOver) {
+cell.innerText = cur;
+regboard[index] = cur;
+
+let winner = checkwin();
+if (winner) {
+gameOver = true;
+celebrate(cur);
+cur === "X" ? scoreX++ : scoreO++;
+updateScore();
+return;
+}
+
+// Check draw
+if ([...cells].every((cell) => cell.innerText !== "")) {
+gameOver = true;
+showDraw();
+return;
+}
+
+// Switch player
+cur = cur === "X" ? "O" : "X";
+updateActivePlayer();
+}
+});
+});
+
+const showDraw = () => {
+speak("It's a Draw!");
+const resultM = document.getElementById("resultMessage");
+const resultText = document.getElementById("resultText");
+const dotlottie = document.querySelector(".celebration");
+
+dotlottie.style.display = "none";
+resultM.style.display = "flex";
+resultText.innerText = "It's a Draw!";
+const resultBox = document.querySelector(".result-box");
+resultBox.classList.remove("win", "lose");
+};
+
+const checkwin = () => {
+for (let C of winCases) {
+let [a, b, c] = C;
+if (
+regboard[a] &&
+regboard[a] === regboard[b] &&
+regboard[a] === regboard[c]
+) {
+winCell = [a, b, c];
+return true;
+}
+}
+
+return null;
+};
+
+
+
+
+      
       const celebrate = (winner) => {
         speak(`Player ${winner} Wins`);
         const dotlottie = document.querySelector(".celebration");
