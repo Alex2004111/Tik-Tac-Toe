@@ -48,11 +48,13 @@
         <!-- From Uiverse.io by Deri-Kurniawan -->
         <div class="flex flex-row gap-2">
           <div class="player-container">
-            <div class="label">You</div>
+            <div class="circle">1</div>
+            <div class="label">Player</div>
 
             : <span id="scoreX">0</span> - <span id="scoreO">0</span> :
 
-            <div class="label">Computer</div>
+            <div class="label">Player</div>
+            <div class="circle">2</div>
           </div>
         </div>
         <div class="top-right">
@@ -110,11 +112,57 @@
     </div>
 
     <script>
+      let regboard = ["", "", "", "", "", "", "", "", ""];
+      let winCases = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [6, 4, 2],
+      ];
+
+      let win = 0;
+      let lose = 0;
+      let achive;
+      let cur = "X";
+      let winCell;
+      let gameOver = false; // New: To stop playing after game ends
+
+      const cells = document.querySelectorAll(".cell");
+
+      cells.forEach((cell, index) => {
+        cell.addEventListener("click", () => {
+          if (cell.innerText === "" && !gameOver && cur === "X") {
+            // Player move
+            cell.innerText = cur;
+            regboard[index] = cur;
+ 
+            let winner = checkwin();
+            if (winner === "X") {
+              gameOver = true;
+              win++;
+              achive = true;
+              updateScore();
+              celebrate();
+              return;
+            }
+
+            // Computer turn
+            setTimeout(() => {
+              oorx();
+            }, 300);
+          }
+        });
+      });
+
       const oorx = () => {
         if (cur === "X") {
           cur = "O";
 
-          
+          // 1. ا
           for (let combo of winCases) {
             const [a, b, c] = combo;
             const values = [regboard[a], regboard[b], regboard[c]];
@@ -127,7 +175,7 @@
             }
           }
 
-
+          // 2. 
           for (let combo of winCases) {
             const [a, b, c] = combo;
             const values = [regboard[a], regboard[b], regboard[c]];
@@ -140,13 +188,13 @@
             }
           }
 
-          
+          //        
           if (regboard[4] === "") {
             playMove(4);
             return;
           }
 
-          
+          // 4. 
           let emptyCells = [];
           regboard.forEach((val, idx) => {
             if (val === "") emptyCells.push(idx);
@@ -177,7 +225,7 @@
           return;
         }
 
-        cur = "X"; 
+        cur = "X"; // ا
       };
 
       const celebrate = () => {
@@ -233,11 +281,6 @@
         const resultBox = document.querySelector(".result-box");
         resultBox.classList.remove("win");
         resultBox.classList.add("lose");
-
-        cells.forEach((cell) => {
-          if (winCell.includes(parseInt(cell.dataset.index)))
-            cell.classList.add("lose");
-        });
       };
 
       const showDraw = () => {
@@ -258,7 +301,7 @@
         regboard = ["", "", "", "", "", "", "", "", ""];
         cells.forEach((cell) => {
           cell.innerText = "";
-          cell.classList.remove("active","lose");
+          cell.classList.remove("active");
         });
         document.getElementById("resultMessage").style.display = "none";
         document.querySelector(".celebration").style.display = "none";
