@@ -110,7 +110,75 @@
     </div>
 
     <script>
-  
+      const oorx = () => {
+        if (cur === "X") {
+          cur = "O";
+
+          
+          for (let combo of winCases) {
+            const [a, b, c] = combo;
+            const values = [regboard[a], regboard[b], regboard[c]];
+            const oCount = values.filter((v) => v === "O").length;
+            const emptyIndex = [a, b, c].find((i) => regboard[i] === "");
+
+            if (oCount === 2 && emptyIndex !== undefined) {
+              playMove(emptyIndex);
+              return;
+            }
+          }
+
+
+          for (let combo of winCases) {
+            const [a, b, c] = combo;
+            const values = [regboard[a], regboard[b], regboard[c]];
+            const xCount = values.filter((v) => v === "X").length;
+            const emptyIndex = [a, b, c].find((i) => regboard[i] === "");
+
+            if (xCount === 2 && emptyIndex !== undefined) {
+              playMove(emptyIndex);
+              return;
+            }
+          }
+
+          
+          if (regboard[4] === "") {
+            playMove(4);
+            return;
+          }
+
+          
+          let emptyCells = [];
+          regboard.forEach((val, idx) => {
+            if (val === "") emptyCells.push(idx);
+          });
+
+          if (emptyCells.length === 0) {
+            gameOver = true;
+            showDraw();
+            return;
+          }
+
+          let randomIndex =
+            emptyCells[Math.floor(Math.random() * emptyCells.length)];
+          playMove(randomIndex);
+        }
+      };
+
+      const playMove = (index) => {
+        cells[index].innerText = "O";
+        regboard[index] = "O";
+
+        let winner = checkwin();
+        if (winner === "O") {
+          gameOver = true;
+          lose++;
+          showLose();
+          updateScore();
+          return;
+        }
+
+        cur = "X"; 
+      };
 
       const celebrate = () => {
         if (achive) {
